@@ -28,3 +28,9 @@ DELETE: Excluir informações
 
 **Request Body**: Informações enviadas no body da requisição. Para este projeto usaremos o formato JSON.
 `request.body`
+
+# Banco de Dados da Aplicação
+
+SQLite usando KnexJS
+
+Criar o arquivo de conexão com o banco de dados.
