@@ -18,8 +18,8 @@ routes.post("/users", (req, res) => {});
 routes.get("/items", itemsController.index);
 
 routes.post("/points", pointsController.create);
+routes.get("/points", pointsController.index);
 routes.get("/points/:id", pointsController.show);
-
 export default routes;
 
 //service pattern
