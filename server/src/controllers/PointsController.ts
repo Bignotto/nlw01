@@ -1,7 +1,16 @@
-import { Request, Response } from "express";
+import { Request, Response, request } from "express";
 import knex from "../database/connection";
 
 class PointsController {
+  async show(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const point = await knex("points").where("id", id).first();
+
+    if (!point) return res.status(400).json({ message: "Not found!" });
+    return res.json(point);
+  }
+
   async create(req: Request, res: Response) {
     const {
       name,
@@ -15,7 +24,7 @@ class PointsController {
       items,
     } = req.body;
 
-    const ids = await knex("points").insert({
+    const point = {
       image: "fakeimg",
       name,
       email,
@@ -25,7 +34,9 @@ class PointsController {
       city,
       uf,
       country,
-    });
+    };
+
+    const ids = await knex("points").insert(point);
 
     const pointItems = items.map((item_id: Number) => {
       return {
@@ -36,7 +47,10 @@ class PointsController {
 
     await knex("point_items").insert(pointItems);
 
-    return res.json({ response: "success!" });
+    return res.json({
+      id: ids[0],
+      ...point,
+    });
   }
 }
 
