@@ -5,6 +5,7 @@ CREATEPOINT
 import React from "react";
 import { Link } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
+import { Map, TileLayer, Marker, Popup } from "react-leaflet";
 
 import "./styles.css";
 import logo from "../../assets/logo.svg";
@@ -48,6 +49,12 @@ const CreatePoint = () => {
             <h2>Endereço</h2>
             <span>Apnte o endereço no mapa:</span>
           </legend>
+          <Map center={[-22.4869163, -47.4697054]} zoom={15}>
+            <TileLayer
+              attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </Map>
           <div className="field-group">
             <div className="field">
               <label htmlFor="uf">
