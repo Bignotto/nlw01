@@ -8,7 +8,16 @@ class PointsController {
     const point = await knex("points").where("id", id).first();
 
     if (!point) return res.status(400).json({ message: "Not found!" });
-    return res.json(point);
+
+    const items = await knex("items")
+      .join("point_items", "items.id", "=", "point_items.item_id")
+      .where("point_items.point_id", id);
+
+    // return res.json({
+    //   items,
+    //   ...point,
+    // });
+    return res.json({ point, items });
   }
 
   async create(req: Request, res: Response) {
