@@ -6,6 +6,7 @@ import React, { useEffect, useState, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import { Map, TileLayer } from "react-leaflet";
+import { LeafletMouseEvent } from "leaflet";
 import axios from "axios";
 
 import api from "../../services/api";
@@ -33,6 +34,7 @@ const CreatePoint = () => {
   const [cities, setCities] = useState<string[]>([]);
 
   const [selectedUf, setSelectedUf] = useState("0");
+  const [selectedCity, setSelectedCity] = useState("0");
 
   useEffect(() => {
     api.get("items").then((response) => {
@@ -60,13 +62,21 @@ const CreatePoint = () => {
       .then((response) => {
         const cityNames = response.data.map((city) => city.nome);
         setCities(cityNames);
-        console.log(selectedUf);
       });
   }, [selectedUf]);
 
   function handleSelectUf(event: ChangeEvent<HTMLSelectElement>) {
     const uf = event.target.value;
     setSelectedUf(uf);
+  }
+
+  function handleSelectCity(event: ChangeEvent<HTMLSelectElement>) {
+    const city = event.target.value;
+    setSelectedCity(city);
+  }
+
+  function handleMapClick(event: LeafletMouseEvent) {
+    console.log(event.latlng);
   }
 
   return (
@@ -107,7 +117,11 @@ const CreatePoint = () => {
             <h2>Endereço</h2>
             <span>Apnte o endereço no mapa:</span>
           </legend>
-          <Map center={[-22.4869163, -47.4697054]} zoom={15}>
+          <Map
+            center={[-22.4869163, -47.4697054]}
+            zoom={15}
+            onClick={handleMapClick}
+          >
             <TileLayer
               attribution='&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -134,7 +148,12 @@ const CreatePoint = () => {
             </div>
             <div className="field">
               <label htmlFor="city">Cidade:</label>
-              <select name="city" id="city">
+              <select
+                name="city"
+                id="city"
+                value={selectedCity}
+                onChange={handleSelectCity}
+              >
                 <option value="0" key="0">
                   Selecione
                 </option>
