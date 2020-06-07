@@ -1,13 +1,34 @@
 import React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Text, ImageBackground } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+import { Feather as Icon } from "@expo/vector-icons";
 
 const logo = "../../assets/logo.png";
+const homebg = "../../assets/home-background.png";
 
 const Home = () => {
   return (
-    <View style={styles.container}>
-      <Image source={require(logo)} />
-    </View>
+    <ImageBackground
+      source={require(homebg)}
+      imageStyle={{ width: 274, height: 368 }}
+      style={styles.container}
+    >
+      <View style={styles.main}>
+        <Image source={require(logo)} />
+        <Text style={styles.title}>Seu Marketplace de coleta de resíduos</Text>
+        <Text style={styles.description}>
+          Conectamos pontos de coleta de resíduos recicláveis à você!
+        </Text>
+      </View>
+      <View style={styles.footer}>
+        <RectButton style={styles.button}>
+          <View style={styles.buttonIcon}>
+            <Icon name="arrow-right" color="#FFF" size={24} />
+          </View>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </RectButton>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -27,7 +48,7 @@ const styles = StyleSheet.create({
   title: {
     color: "#322153",
     fontSize: 32,
-    fontFamily: "Ubuntu_700Bold",
+    fontFamily: "RobotoMono_500Medium",
     maxWidth: 260,
     marginTop: 64,
   },
@@ -36,7 +57,7 @@ const styles = StyleSheet.create({
     color: "#6C6C80",
     fontSize: 16,
     marginTop: 16,
-    fontFamily: "Roboto_400Regular",
+    fontFamily: "RobotoMono_400Regular",
     maxWidth: 260,
     lineHeight: 24,
   },
@@ -77,7 +98,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     textAlign: "center",
     color: "#FFF",
-    fontFamily: "Roboto_500Medium",
+    fontFamily: "RobotoMono_400Regular",
     fontSize: 16,
   },
 });
