@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -18,11 +18,41 @@ import Constants from "expo-constants";
 import MapView, { Marker } from "react-native-maps";
 import { SvgUri } from "react-native-svg";
 
+import api from "../../services/api";
+
+interface Item {
+  id: number;
+  title: string;
+  image_url: string;
+}
+
 const Points = () => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
   const navigation = useNavigation();
+
+  useEffect(() => {
+    api.get("items").then((response) => {
+      setItems(response.data);
+    });
+  }, []);
+
   function handleNavigateBack() {
     navigation.goBack();
   }
+
+  function handleSelectedItem(id: number) {
+    const alreadySelected = selectedItems.findIndex((item) => item === id);
+
+    if (alreadySelected >= 0) {
+      const filteredItems = selectedItems.filter((item) => item !== id);
+      setSelectedItems(filteredItems);
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
+  }
+
   return (
     <>
       <View style={styles.container}>
@@ -72,54 +102,22 @@ const Points = () => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: 20 }}
         >
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.15.15:3333/uploads/lambadas.svg"
-            ></SvgUri>
-            <Text style={styles.itemTitle}>Lâmpadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.15.15:3333/uploads/lambadas.svg"
-            ></SvgUri>
-            <Text style={styles.itemTitle}>Lâmpadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.15.15:3333/uploads/lambadas.svg"
-            ></SvgUri>
-            <Text style={styles.itemTitle}>Lâmpadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.15.15:3333/uploads/lambadas.svg"
-            ></SvgUri>
-            <Text style={styles.itemTitle}>Lâmpadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.15.15:3333/uploads/lambadas.svg"
-            ></SvgUri>
-            <Text style={styles.itemTitle}>Lâmpadas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={() => {}}>
-            <SvgUri
-              width={42}
-              height={42}
-              uri="http://192.168.15.15:3333/uploads/lambadas.svg"
-            ></SvgUri>
-            <Text style={styles.itemTitle}>Lâmpadas</Text>
-          </TouchableOpacity>
+          {items.map((item) => (
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={[
+                styles.item,
+                selectedItems.includes(item.id) ? styles.selectedItem : {},
+              ]}
+              onPress={() => {
+                handleSelectedItem(item.id);
+              }}
+              key={item.id}
+            >
+              <SvgUri width={42} height={42} uri={item.image_url}></SvgUri>
+              <Text style={styles.itemTitle}>{item.title}</Text>
+            </TouchableOpacity>
+          ))}
         </ScrollView>
       </View>
     </>
@@ -221,6 +219,6 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontFamily: "RobotoMono_400Regular",
     textAlign: "center",
-    fontSize: 13,
+    fontSize: 10,
   },
 });

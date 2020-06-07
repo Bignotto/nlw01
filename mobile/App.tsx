@@ -15,7 +15,7 @@ export default function App() {
     RobotoMono_500Medium,
   });
 
-  if (!fontsLoaded) return <AppLoading />;
+  if (!fontsLoaded) return <View />;
 
   return (
     <>
