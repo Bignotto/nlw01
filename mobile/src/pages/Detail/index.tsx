@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -13,16 +13,50 @@ import { Feather as Icon, FontAwesome } from "@expo/vector-icons";
 import {
   useNavigation,
   NavigationHelpersContext,
+  useRoute,
 } from "@react-navigation/native";
 import Constants from "expo-constants";
-import MapView, { Marker } from "react-native-maps";
-import { SvgUri } from "react-native-svg";
+
+import api from "../../services/api";
+
+interface Params {
+  point_id: number;
+}
+
+interface Data {
+  point: {
+    image: string;
+    name: string;
+    email: string;
+    telefone: string;
+    city: string;
+    uf: string;
+  };
+  items: {
+    title: string;
+  }[];
+}
 
 const Detail = () => {
+  const [data, setData] = useState<Data>({} as Data);
+
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const routeParams = route.params as Params;
+
+  useEffect(() => {
+    api.get(`points/${routeParams.point_id}`).then((response) => {
+      setData(response.data);
+    });
+  }, []);
+
   function handleNavigateBack() {
     navigation.goBack();
   }
+
+  if (!data.point) return null;
+
   return (
     <>
       <View style={styles.container}>
@@ -37,12 +71,16 @@ const Detail = () => {
           }}
         />
 
-        <Text style={styles.pointName}>Mercado Qualidade</Text>
-        <Text style={styles.pointItems}>Óleo de Cozinha, Baterias</Text>
+        <Text style={styles.pointName}>{data.point.name}</Text>
+        <Text style={styles.pointItems}>
+          {data.items.map((item) => item.title).join(", ")}
+        </Text>
 
         <View style={styles.address}>
           <Text style={styles.addressTitle}>Endereço:</Text>
-          <Text style={styles.addressContent}>Rio Claro, SP</Text>
+          <Text
+            style={styles.addressContent}
+          >{`${data.point.city}, ${data.point.uf}`}</Text>
         </View>
       </View>
       <View style={styles.footer}>
